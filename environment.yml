@@ -1,0 +1,12 @@
+name: p3
+channels:
+  - defaults
+  - pytorch
+dependencies:
+  - python=3.6
+  - pip
+  - numpy
+  - pandas
+  - pytorch
+  - torchvision
+  - cudatoolkit=10.1
