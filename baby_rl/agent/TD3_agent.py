@@ -73,6 +73,9 @@ class TD3Agent(BaseAgent):
         # handle done
         if done[0]:
             self.random_process.reset_states()
+            self.state = self.task.reset()
+            # use a normalizer for the states
+            self.state = config.state_normalizer(self.state)
         # 
         self.state = next_state
         self.total_steps += config.num_workers

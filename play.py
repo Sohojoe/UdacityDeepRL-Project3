@@ -50,7 +50,7 @@ def td3_continuous(**kwargs):
     # config.num_workers = 1
     # config.mini_batch_size = 100
     # config.warm_up = int(100)
-    config.num_workers = 20
+    config.num_workers = 2
     config.mini_batch_size = 2000
     config.warm_up = int(1e5)
     config.max_steps = int(3e6)
@@ -58,10 +58,11 @@ def td3_continuous(**kwargs):
 
     # config.task_fn = lambda: Task(config.game, config.num_workers)
     config.task_fn = lambda: config.eval_env
-    config.eval_env = Task(config.game, 20, inference=True)
+    # config.eval_env = Task(config.game, 2, inference=True)
+    config.eval_env = Task(config.game, 2)
     # config.eval_env.close()
     config.eval_interval = int(1e5)
-    config.eval_episodes = 3
+    config.eval_episodes = 5
     config.save_interval = int(1e5)
 
     config.network_fn = lambda: TD3Net(
@@ -94,10 +95,9 @@ if __name__ == '__main__':
     select_device(-1)
     # select_device(0)
 
-    game, agent_name = 'Hopper-v0', 'TD3Agent-Hopper-v0-target_score_500-run-0-700000'
+    # game, agent_name = 'Hopper-v0', 'TD3Agent-Hopper-v0-target_score_500-run-0-700000'
+    # game, agent_name = 'Tennis', 'TD3Agent-Tennis--run-0-50000'
+    # game, agent_name = 'Tennis', 'TD3Agent-Tennis--run-0-100000'
+    # game, agent_name = 'Tennis', 'TD3Agent-Tennis--run-0-200000'
     game, agent_name = 'Tennis', 'TD3Agent-Tennis--run-0-3000000'
-    # game, agent_name = 'TerrainMarathonMan-v0', 'TD3Agent-TerrainMarathonMan-v0-target_score_500-run-0-5000000'
-    # a2c_continuous(game=game)
-    # ppo_continuous(game=game)
-    # ddpg_continuous(game=game)
     td3_continuous(game=game, agent_name=agent_name)

@@ -1,13 +1,15 @@
 [average_over_3_runs]: images/average_over_3_runs.png "average_over_3_runs"
 [episode_returns_ave100]: images/episode_returns_ave100.png "episode_returns_ave100"
-[p2_solution]: images/p2_solution.gif "p2_solution"
+[p3_solution]: images/p3_solution.gif "p2_solution"
+[p3_solution_3m_steps]: images/p3_solution_3m_steps.gif "p3_solution_3m_steps"
+[p3_solution_50k_steps]: images/p3_solution_50k_steps.gif "p3_solution_50k_steps"
 [raw_average_over_3_runs]: images/raw_average_over_3_runs.png "raw_average_over_3_runs"
 [raw_episode_returns]: images/raw_episode_returns.png "raw_episode_returns"
 [trained model]: images/trained_model.png "trained model"
 
-# Udacity Reinforcement Learning Nanodagree - Project Two
+# Udacity Reinforcement Learning Nanodagree - Project Three
 
-Joe Booth April 2019
+Joe Booth May 2019
 
 ## Project Objective
 
@@ -31,7 +33,7 @@ Twined Delayed DDPG (TD3) focuses on continuous control environments. The author
 
 The implementation I chose is based on the TD3 implementation in [Modularized Implementation of Deep RL Algorithms in PyTorch](https://github.com/ShangtongZhang/DeepRL). This is a codebase base where functionality such as the replay buffer is well abstracted and the implementation of each algorithm is easy to read.
 
-I modified this implementation of TD3 to support environments that contain multiple instances of the same environment. This can reduce the number back and forths between the environment and python code and can improve wall clock training speeds.
+I modified this implementation of TD3 to support environments that contain multiple agents and self-play.
 
 I tested my changes on [Marathon Environments](https://arxiv.org/abs/1902.09097) (Booth et al., 2019), which is a suite of continuous control benchmarks that I created using Unity. Marathon Environments includes some basic environments simular to Mujoco, such as Hopper, Walker, Ant, and Humanoid, along with some more complex versions which have to learn to navigate a randomize terrain as well as motion matching (simular to DeepMimic) where the agent must match motion captured data.
 
@@ -41,11 +43,11 @@ When I switched to the Tennis environment, I found it was able to train with no 
 
 ### Hyperparameters
 
-* ```num_workers = 20``` - this is the number of concurrent environments.
-* ```config.mini_batch_size = 2000``` - this is the batch size. I used a formula of ```100 * num_workers``` and found this stabilized learning well.
-* ```warm_up = int(1e5)``` - number of random actions before training starts
+* ```num_workers = 2``` - this is the number of agents.
+* ```config.mini_batch_size = 2000``` - this is the batch size. I used a formula of ```1000 * num_workers``` and found this stabilized learning well.
+* ```warm_up = int(1e4)``` - number of random actions before training starts
 * ```max_steps = int(3e6)``` = the max number of training steps to take
-* ```memory_size = int(1e6)``` = replay buffer size
+* ```memory_size = int(1e5)``` = replay buffer size
 * ```discount = 0.99``` = discount rate
 * ```random_process_fn = GaussianProcess(std=LinearSchedule(0.1)``` = action noise
 * ```td3_noise = 0.2``` = next_action noise
@@ -66,36 +68,24 @@ output layer = 4 (number of actions)
 
 ## Results
 
-I was able to achieve an average score of 30+ over 100 episodes after 115 episodes.
+I was able to achieve an average score of .5+ over 100 episodes after 1,2870 episodes.
 
 ![episode_returns_ave100]
 
-The raw output of the average score over the 20 environments at the end of each episode looks like this:
-
-![raw_episode_returns]
-
 Here is a video of the successful agent:
 
-![Tennis Environment][p2_solution]
+![Tennis Environment][p3_solution]
 
-I also check two additional runs to ensure that the results are robust and reproducible. All three runs resulted in simular scores:
+Here is the agent after 50k steps. We see it plays well, however, the right and agent has an edge.
 
-![average_over_3_runs]
+![50k steps][p3_solution_50k_steps]
+
+Here is the agent after 3m steps. We see both agents now play at the same level.
+
+![3m steps][p3_solution_3m_steps]
+
 
 ## Ideas for Future Work
 
-Future work might want to explore a number of different directions:
+Future work might want to explore training with less steps. For example the [Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor](https://arxiv.org/abs/1801.01290) (Haarnoja et al., 2018) algorithm has been shown to give SOA results and might perform faster on this environment due to its focus on maximizing entropy.
 
-### Implement a PD controller
-
-Many environments in the continuous control domain benefit from using a PD controller. The paper, [Learning Locomotion Skills Using DeepRL: Does the Choice of Action Space Matter?](https://www.cs.ubc.ca/~van/papers/2017-SCA-action/2017-SCA-action.pdf) (Peng et al.,2017) explores the value of using PD controllers. The idea I propose exploring is to implement the PD controller on top of the Tennis environment.
-
-### Explore Action Smoothing
-
-In [DReCon: Data-Driven Responsive Control of Physics-Based Characters](https://t.co/Ahn4UiM5EI?amp=1) (BERGAMIN et al., 2019)
-
-A recursive exponentially weighted moving average filter is used, yt = βat +(1−β)yt−1, where yt and at are the output and input of the filter at time t respectively. Here, the action stiffness β is a hyperparameter controlling the filter strength
-
-### Other State of Art Continuous Control algorithms
-
-The [Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor](https://arxiv.org/abs/1801.01290) (Haarnoja et al., 2018) algorithm has been shown to give SOA results and might perform faster on this environment due to its focus on maximizing entropy.

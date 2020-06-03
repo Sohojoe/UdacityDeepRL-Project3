@@ -86,7 +86,7 @@ class MLAgentsEnv(gym.Env):
         next_states = env_info.vector_observations         # get next state (for each agent)
         rewards = env_info.rewards                         # get reward (for each agent)
         dones = env_info.local_done                        # see if episode finished
-        dones = [1 if t else 0 for t in env_info.local_done]
+        dones = [1 if t or self._env.global_done else 0 for t in env_info.local_done]
         dones = np.array(env_info.local_done)
         result = (
             next_states, 
@@ -94,6 +94,8 @@ class MLAgentsEnv(gym.Env):
             dones,
             {"batched_step_result": env_info}
         )
+        if self._env.global_done:
+            print ('global_done')
         return result
 
     def render(self, mode="rgb_array"):

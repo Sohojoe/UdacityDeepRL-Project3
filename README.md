@@ -19,11 +19,15 @@ This submission solves the Tennis environment.
 
 ![Tennis Environment][p3_solution]
 
-The goal of this environment ....
+The goal of this environment is to have two agents which aim to complete against each other in a simplified version of Tennis. Each agent is a racket which aim to bounce the ball over the net without it touching the ground on their side of the net.
 
-The observation space ....
+The observation space has 8 varaibles which track the position and velocity of the rackets and ball.
 
-This version of the Tenis environment is considered solved when an average score of xxx
+Each agents has two actions in continious space. One is for the x-position, the other for the height.
+
+The agents recive a reward of +.1 for getting the ball leagally over the net. It recives a score of -.001 if the ball hits the ground or if the agent hits the ball out of bounds.
+
+This version of the Tenis environment is considered solved when an average score of at least +0.5 averaged over the previous 100 episodes.
 
 ## Getting Started
 

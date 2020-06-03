@@ -9,22 +9,22 @@ def td3_continuous(**kwargs):
     config.merge(kwargs)
 
     # set number of workers and batch size
-    config.num_workers = 20
+    config.num_workers = 2
     config.mini_batch_size = 2000
     config.num_mini_batch = 1
     # number of random actions before training starts
-    config.warm_up = int(1e5)
+    config.warm_up = int(1e4)
     # set the max number of taining steps to take
     config.max_steps = int(3e6)
 
     # set up the environment
     config.task_fn = lambda: config.eval_env
-    config.eval_env = Task(config.game, 20)
+    config.eval_env = Task(config.game, 2)
     # 
-    config.eval_interval = int(1e5)
+    config.eval_interval = int(1e4)
     config.eval_episodes = 3
     # set how often to save the model
-    config.save_interval = int(1e5)
+    config.save_interval = int(1e4)
 
     # set the nn size and learning weights
     config.network_fn = lambda: TD3Net(
@@ -32,11 +32,11 @@ def td3_continuous(**kwargs):
         actor_body_fn=lambda: FCBody(config.state_dim, (32, 32), gate=F.relu),
         critic_body_fn=lambda: FCBody(
             config.state_dim+config.action_dim, (32, 32), gate=F.relu),
-        actor_opt_fn=lambda params: torch.optim.Adam(params, lr=1e-3),
-        critic_opt_fn=lambda params: torch.optim.Adam(params, lr=1e-3))
+        actor_opt_fn=lambda params: torch.optim.Adam(params, lr=3e-4),
+        critic_opt_fn=lambda params: torch.optim.Adam(params, lr=3e-4))
 
     # create the replay buffer and hyper parameters
-    config.replay_fn = lambda: Replay(memory_size=int(1e6), batch_size=config.mini_batch_size)
+    config.replay_fn = lambda: Replay(memory_size=int(1e5), batch_size=config.mini_batch_size)
     config.discount = 0.99
     # set the random procress for actions
     config.random_process_fn = lambda: GaussianProcess(
