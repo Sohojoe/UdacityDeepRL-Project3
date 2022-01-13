@@ -14,7 +14,7 @@ scikit-image==0.14.2
 # tqdm==4.31.1
 # pandas==0.24.1
 pathlib==1.0.1
-pillow==6.2.1
+pillow==9.0.0
 grpcio==1.11.0
 # seaborn==0.9.0
 # roboschool==1.0.38
